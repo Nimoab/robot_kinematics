@@ -4,24 +4,23 @@
 
 $$
 \begin{array}{|c|l|}
-\hline
    m &
-   \textsf{The task space size} \\\hline
+   \textsf{The task space size} \\
    n &
-   \textsf{The configuration space size} \\\hline
-   \bm l &
-   \textsf{Column vector of size } n \textsf{ which component } l_i \textsf{ is the length of the link connecting } \\ & \textsf{the joint } i \textsf{ to the joint } i + 1\\\hline
-   \bm x & 
-   \textsf{End effector position in cartesian coordinates as an } m \textsf{ lines column vector}  \\\hline
-   \bm q & 
-   \textsf{An } n \textsf{ lines column vector of the configuration of the robot}  \\\hline
-   \bm J & 
-   \textsf{The } m\times n  \textsf{ Jacobian matrix}  \\\hline
-   \dot{\bm x} & \textsf{Velocity of the end effector in task space}\\\hline
-   \dot{\bm q} & \textsf{Velocity of the robot in configuration space}\\\hline
-   \odot & \textsf{The element-wise product} \\ \hline
-   \bm I & \textsf{An identity matrix} \\
-\hline
+   \textsf{The configuration space size} \\
+   \mathbf{l} &
+   \textsf{Column vector of size } n \textsf{ which component } l_i \textsf{ is the length of the link connecting } \\ 
+         & \textsf{the joint } i \textsf{ to the joint } i + 1\\
+   \mathbf x & 
+   \textsf{End effector position in cartesian coordinates as an } m \textsf{ lines column vector}  \\
+   \mathbf q & 
+   \textsf{An } n \textsf{ lines column vector of the configuration of the robot}  \\
+   \mathbf J & 
+   \textsf{The } m\times n  \textsf{ Jacobian matrix}  \\
+   \dot{\mathbf x} & \textsf{Velocity of the end effector in task space}\\
+   \dot{\mathbf q} & \textsf{Velocity of the robot in configuration space}\\
+   \odot & \textsf{The element-wise product} \\
+   \mathbf I & \textsf{An identity matrix} \\
 \end{array}
 $$
 
@@ -30,42 +29,43 @@ $$
 ### Relation between the positions
 
 The problem of the forward kinematic is to find the position of the end effector given the robot configuration. This can be expressed as
-$$\bm x = f(\bm q)$$
+$$\mathbf x = f(\mathbf q)$$
 
 Where $f$ if an $m$ components function. In the special case of a robot arm moving in a 2D space, $f$'s components are defined as
-$$f_1(\bm q) = \sum_{j = 1}^{n} l_j \cos\left( \sum_{k = 1}^{j} q_k\right)$$
-$$f_2(\bm q) = \sum_{j = 1}^{n} l_j \sin\left( \sum_{k = 1}^{j} q_k\right)$$
+$$f_1(\mathbf q) = \sum_{j = 1}^{n} l_j \cos\left( \sum_{k = 1}^{j} q_k\right)$$
+$$f_2(\mathbf q) = \sum_{j = 1}^{n} l_j \sin\left( \sum_{k = 1}^{j} q_k\right)$$
 
-Defining $\bm {CS}(\bm q)$ as a $2\times n$ matrix which components are the $\sin$ and $\cos$ of the robot configuration
+Defining $\mathbf {CS}(\mathbf q)$ as a $2\times n$ matrix which components are the $\sin$ and $\cos$ of the robot configuration
 
 $$
-\bm {CS}(\bm q) = \left(
+\mathbf {CS}(\mathbf q) = \left(
  \begin{matrix}
     \cos(q_1)       & 
     \cos(q_1 + q_2) & 
     \ldots          &
-    \cos\left(\sum_{i = 1}^{n} q_i \right) \\ 
+    \cos\left(\sum_\limits{i = 1}^{n} q_i\right) \\ 
     \sin(q_1)       & 
     \sin(q_1 + q_2) & 
     \ldots          &
-    \sin\left(\sum_{i = 1}^{n} q_i \right) \\ 
+    \sin\left(\sum_\limits{i = 1}^{n} q_i\right) \\ 
   \end{matrix}  \right)
 $$
 
 We have
-$$\bm x = \bm {CS}(\bm q) \;\;\bm l$$
+$$\mathbf x = \mathbf {CS}(\mathbf q) \mathbf l$$
 
 
 ### Relations between the velocities
 The velocities can be obtained in both spaces by differientiating both side of the forwards kinematic equation with respect to the time
-$$\dot{\bm x} = \dot{f}(\bm q)$$
+$$\dot{\mathbf x} = \dot{f}(\mathbf q)$$
 
 We can apply the chaining rule to get
-$$\frac{dx_i}{dt} = \frac{df_i(\bm q)}{dt} = \sum_{j = 1}^{n} \frac{\partial f_i}{\partial q_j} \frac{dq_j}{dt} = \sum_{j = 1}^{n} \frac{\partial f_i}{\partial q_j} \dot{q_j}$$ 
+$$\frac{dx_i}{dt} = \frac{df_i(\mathbf q)}{dt} = \sum_{j = 1}^{n} \frac{\partial f_i}{\partial q_j} \frac{dq_j}{dt} = \sum_{j = 1}^{n} \frac{\partial f_i}{\partial q_j} \dot{q_j}$$ 
 
 Defining the Jacobian matrix
+
 $$
-\bm J(\bm q) = \left(
+\mathbf J(\mathbf q) = \left(
  \begin{matrix}
     \frac{\partial f_1}{\partial q_1} & 
     \frac{\partial f_2}{\partial q_2} & 
@@ -78,7 +78,7 @@ $$
 $$
 
 We have 
-$$\dot{\bm x} = \bm J \; \dot{\bm q}$$
+$$\dot{\mathbf x} = \mathbf J \dot{\mathbf q}$$
 
 In the simple case defined above, the components of the Jacobian matrix are given by
 
@@ -89,9 +89,10 @@ J_{2,i} &= &\sum_{j = i}^{n}l_j\cos\left( \sum_{k = 1}^{j} q_k \right)
 \end{aligned}
 $$
 
-If we define $\bm L$ an $m\times m$ matrix which is the repetition of the $\bm l$ vector and $\bm\Delta$ a lower triangular $m\times m$ matrix which non zero values are equal to 1, the Jacobian can be defined in terms of the $\bm {CS}$ matrix defined in above:
+If we define $\mathbf L$ an $m\times m$ matrix which is the repetition of the $\mathbf l$ vector and $\mathbf\Delta$ a lower triangular $m\times m$ matrix which non zero values are equal to 1, the Jacobian can be defined in terms of the $\mathbf {CS}$ matrix defined in above:
+
 $$
-\bm L = \left(
+\mathbf L = \left(
  \begin{matrix}
     l_1     & l_1     & \ldots & l_1     \\
     \vdots  & \vdots  &        & \vdots  \\ 
@@ -99,7 +100,7 @@ $$
     l_m     & l_m     & \ldots & l_m     \\
   \end{matrix}  \right) \qquad\quad
 %
-\bm \Delta = \left(
+\mathbf \Delta = \left(
  \begin{matrix}
     1       &         &        &   & 0   \\
             & 1       &        &   &     \\
@@ -108,9 +109,10 @@ $$
     1       &         &        &   & 1   \\
   \end{matrix}  \right) \qquad\quad
 %
-\bm{F} = \left( \begin{matrix} 0 & -1 \\ 1 & 0  \end{matrix} \right)
-\\[30pt]
-\bm J(\bm q) = \bm F \;\;  \bm {CS}(\bm q) \;\; (\bm L \odot \bm \Delta)
+\mathbf{F} = \left( \begin{matrix} 0 & -1 \\
+                                   1 & 0  
+                    \end{matrix} \right)\qquad\quad\\
+\mathbf J(\mathbf q) = \mathbf F \text{ } \mathbf {CS}(\mathbf q) \text{ } (\mathbf L \odot \mathbf \Delta)
 $$
 
 # Control
